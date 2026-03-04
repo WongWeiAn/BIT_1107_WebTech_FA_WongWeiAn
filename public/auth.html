@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QIU Lost & Found - Authentication</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1rem;
+            z-index: 1;
+        }
+        
+        #authForm input {
+            padding-left: 45px !important;
+            margin-bottom: 0;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .auth-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+        
+        .toggle-link {
+            color: #00509d;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .toggle-link:hover {
+            color: #003366;
+            text-decoration: underline;
+        }
+        
+        .forgot-password-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .forgot-password-link:hover {
+            color: #003366;
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-logo i {
+            font-size: 2.5rem;
+            color: #003366;
+            background: white;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-logo h1 {
+            font-size: 1.5rem;
+            color: #003366;
+            margin: 0;
+        }
+        
+        .auth-card {
+            max-width: 450px;
+            width: 90%;
+            margin: 0 auto;
+        }
+        
+        button[type="submit"] {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #003366;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button[type="submit"]:hover {
+            background: #00509d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        button[type="submit"]:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            text-align: center;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            text-align: center;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        /* Hidden server status */
+        .server-status {
+            display: none;
+        }
+    </style>
+</head>
+<body class="auth-body">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <i class="fas fa-university"></i>
+            <h1>QIU Lost & Found</h1>
+        </div>
+        
+        <!-- Server Status (Hidden) -->
+        <div id="serverStatus" class="server-status"></div>
+        
+        <!-- Error/Success Messages -->
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <h2 id="authTitle" style="text-align: center; margin-bottom: 1.5rem; color: #0f172a;">Login</h2>
+        
+        <form id="authForm">
+            <!-- Login fields (shown by default) -->
+            <div id="loginFields">
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+            </div>
+            
+            <!-- Register fields (hidden by default) -->
+            <div id="registerFields" style="display: none;">
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+            </div>
+            
+            <!-- Password field (always visible) -->
+            <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            
+            <button type="submit" id="authBtn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+        
+        <div class="auth-links">
+            <p onclick="toggleAuth()" id="toggleMsg" class="toggle-link">Need an account? Register</p>
+            
+            <!-- Forgot Password Link -->
+            <a href="forgotpass.html" class="forgot-password-link">
+                <i class="fas fa-key"></i> Forgot Password?
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000';
+        let isLogin = true; // Start with login mode
+
+        // Check server connection on page load (silent)
+        async function checkServerConnection() {
+            try {
+                await fetch(`${API_BASE_URL}/api/test`);
+                // Do nothing with the result - silent check
+            } catch (error) {
+                console.log('Server connection check failed, but continuing...');
+            }
+        }
+
+        checkServerConnection();
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            
+            // Hide success message if showing
+            document.getElementById('successMessage').classList.remove('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+            
+            // Hide error message if showing
+            document.getElementById('errorMessage').classList.remove('show');
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                successDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleAuth() {
+            isLogin = !isLogin;
+            
+            const title = document.getElementById('authTitle');
+            const toggleMsg = document.getElementById('toggleMsg');
+            const authBtn = document.getElementById('authBtn');
+            const loginFields = document.getElementById('loginFields');
+            const registerFields = document.getElementById('registerFields');
+            
+            if (isLogin) {
+                // Switch to login mode
+                title.innerText = 'Login';
+                toggleMsg.innerText = 'Need an account? Register';
+                authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                loginFields.style.display = 'block';
+                registerFields.style.display = 'none';
+            } else {
+                // Switch to register mode
+                title.innerText = 'Register';
+                toggleMsg.innerText = 'Have an account? Login';
+                authBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+                loginFields.style.display = 'none';
+                registerFields.style.display = 'block';
+            }
+            
+            // Clear any messages
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+            
+            // Clear form
+            document.getElementById('authForm').reset();
+        }
+
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const authBtn = document.getElementById('authBtn');
+            
+            if (isLogin) {
+                // Login mode
+                const email = document.getElementById('loginEmail').value.trim();
+                
+                if (!email || !password) {
+                    showError('Email and password are required');
+                    return;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError('Please enter a valid email address');
+                    return;
+                }
+                
+                // Disable button
+                authBtn.disabled = true;
+                authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+                
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/login`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ 
+                            email: email,
+                            password: password 
+                        }),
+                        credentials: 'include'
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (res.ok) {
+                        showSuccess('Login successful! Redirecting...');
+                        
+                        setTimeout(() => {
+                            window.location.href = `${API_BASE_URL}/index.html`;
+                        }, 1000);
+                    } else {
+                        showError(data.error || 'Invalid email or password');
+                        authBtn.disabled = false;
+                        authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showError('Network error. Please check if server is running on port 3000.');
+                    authBtn.disabled = false;
+                    authBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                }
+            } else {
+                // Register mode
+                const username = document.getElementById('username').value.trim();
+                const email = document.getElementById('email').value.trim();
+                
+                if (!username || !email || !password) {
+                    showError('All fields are required');
+                    return;
+                }
+                
+                if (username.length < 3) {
+                    showError('Username must be at least 3 characters');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters');
+                    return;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError('Please enter a valid email address');
+                    return;
+                }
+                
+                // Disable button
+                authBtn.disabled = true;
+                authBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+                
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/register`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ 
+                            username: username, 
+                            email: email, 
+                            password: password 
+                        }),
+                        credentials: 'include'
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (res.ok) {
+                        showSuccess('Registration successful! Switching to login...');
+                        
+                        // Switch to login mode after 2 seconds
+                        setTimeout(() => {
+                            toggleAuth();
+                        }, 2000);
+                    } else {
+                        showError(data.error || 'Registration failed');
+                        authBtn.disabled = false;
+                        authBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    showError('Network error. Please check if server is running on port 3000.');
+                    authBtn.disabled = false;
+                    authBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+                }
+            }
+        });
+
+        // Handle Enter key for form submission
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('authForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>

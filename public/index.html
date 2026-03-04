@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Lost & Found</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="nav">
+            <div class="nav-left">
+                <div class="logo-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h1>QIU Lost & Found</h1>
+            </div>
+            <div class="nav-right">
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+        <!-- Directory/Navigation Bar -->
+        <div class="directory-bar">
+            <div class="directory-container">
+                <a href="/index.html" class="directory-item active">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <span class="directory-separator">|</span>
+                <span class="directory-item" id="directoryUsername">
+                    <i class="fas fa-user"></i> <span id="navUsername">Guest</span>
+                </span>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Search and Filter Section -->
+    <div class="search-filter-container">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Search by title, description, or location..." onkeyup="filterItems()">
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterItems('all')" id="filterAll">
+                <i class="fas fa-list"></i> All Items
+            </button>
+            <button class="filter-btn" onclick="filterItems('lost')" id="filterLost">
+                <i class="fas fa-exclamation-triangle"></i> Lost Items
+            </button>
+            <button class="filter-btn" onclick="filterItems('found')" id="filterFound">
+                <i class="fas fa-check-circle"></i> Found Items
+            </button>
+        </div>
+    </div>
+
+    <main>
+        <form id="itemForm">
+            <h2><i class="fas fa-plus-circle"></i> Post a Report</h2>
+            <input type="text" id="title" placeholder="Item Name" required>
+            <textarea id="description" placeholder="Description" required></textarea>
+            <div class="row">
+                <select id="category">
+                    <option value="Lost">Lost</option>
+                    <option value="Found">Found</option>
+                </select>
+                <input type="date" id="item_date" required>
+            </div>
+            <input type="text" id="location" placeholder="Location" required>
+            <input type="email" id="email_id" placeholder="Your Email" required>
+            <input type="text" id="contact_info" placeholder="Phone (Optional)">
+            <div class="file-input-container">
+                <label for="image" class="file-input-label">
+                    <i class="fas fa-camera"></i> Upload Image (Optional)
+                </label>
+                <input type="file" id="image" accept="image/*">
+            </div>
+            <button type="submit">
+                <i class="fas fa-paper-plane"></i> Submit Report
+            </button>
+        </form>
+        
+        <div class="items-container">
+            <div class="items-header">
+                <h2><i class="fas fa-clipboard-list"></i> Recent Reports</h2>
+                <span id="itemsCount" class="items-count"></span>
+            </div>
+            <div id="itemList"></div>
+        </div>
+    </main>
+
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
