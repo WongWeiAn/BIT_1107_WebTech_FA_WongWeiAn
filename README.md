@@ -11,3 +11,9 @@
 - User Authentication
 - Item Management
 - Search & Filter
+
+## Technologies Used
+
+- Node.js
+- Express
+- MySQL
